@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\ofxDirectShowDXTVideoPlayer\src\ofxDirectShowDXTVideoPlayer.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxDirectShowDXTVideoPlayer\src\DSRawSampleGrabber.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxDirectShowDXTVideoPlayer\src\DirectShowDXTVideo.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxDirectShowDXTVideoPlayer\src\uids.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ofApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\amextra.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\amfilter.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\amvideo.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\arithutil.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\combase.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\cprop.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\ctlutil.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\ddmm.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\dllentry.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\dllsetup.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\mtype.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\outputq.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\perflog.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\pstream.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\pullpin.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\refclock.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\renbase.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\schedule.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\seekpt.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\source.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\strmctl.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\sysclock.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\transfrm.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\transip.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\videoctl.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\vtrans.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\winctrl.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\winutil.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\wxdebug.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\wxlist.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\External\BaseClasses\wxutil.cpp">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="addons">
+      <UniqueIdentifier>{71834F65-F3A9-211E-73B8-DC85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxDirectShowDXTVideoPlayer">
+      <UniqueIdentifier>{A01D57E3-4385-D279-5442-2B6B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxDirectShowDXTVideoPlayer\src">
+      <UniqueIdentifier>{2212A001-0BCF-A13A-16C5-6E83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxDirectShowDXTVideoPlayer\libs">
+      <UniqueIdentifier>{7B28EEDF-4174-7F03-A853-4E41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxDirectShowDXTVideoPlayer\libs\External">
+      <UniqueIdentifier>{A7F76C80-E25B-683B-2C04-05F9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{3e221da1-9a79-48f8-bde8-965f6bbf9e06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9a3dcc76-f9f2-4add-b69d-bd35c76fff6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses">
+      <UniqueIdentifier>{CE5AEC84-D7AA-4FC4-3089-C4CE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ofApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxDirectShowDXTVideoPlayer\src\ofxDirectShowDXTVideoPlayer.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxDirectShowDXTVideoPlayer\src\DSRawSampleGrabber.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxDirectShowDXTVideoPlayer\src\DirectShowDXTVideo.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxDirectShowDXTVideoPlayer\src\uids.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxDirectShowDXTVideoPlayer\src\DXTShared.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxDirectShowDXTVideoPlayer\src\DSShared.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\amextra.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\amfilter.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\cache.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\checkbmi.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\combase.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\cprop.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\ctlutil.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\ddmm.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\dllsetup.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\dxmperf.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\fourcc.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\measure.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\msgthrd.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\mtype.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\outputq.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\perflog.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\perfstruct.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\pstream.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\pullpin.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\refclock.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\reftime.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\renbase.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\schedule.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\seekpt.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\source.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\streams.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\strmctl.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\sysclock.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\transfrm.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\transip.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\videoctl.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\vtrans.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\winctrl.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\winutil.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\wxdebug.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\wxlist.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\External\BaseClasses\wxutil.h">
+      <Filter>addons\ofxDirectShowDXTVideoPlayer\libs\External\BaseClasses</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ofxDirectShowDXTVideoPlayerExample</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <ProjectName>ofxDirectShowDXTVideoPlayerExample</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\src;..\libs\External\BaseClasses;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>mkdir bin\$(Platform)\$(Configuration)\data
+copy /y assets\sample-1080p30-Hap.avi bin\$(Platform)\$(Configuration)\data\
+for /d %%f in ($(OF_ROOT)\libs\*) do (if exist %%f\lib\vs\$(Platform_Actual)\*.dll ( robocopy "%%f\lib\vs\$(Platform_Actual)" "$(ProjectDir)bin/$(Platform)/$(Configuration)" "*.dll" /njs /njh /np /fp /bytes ))
+if errorlevel 1 exit 0 else exit %errorlevel%</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\src;..\libs\External\BaseClasses;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>mkdir bin\$(Platform)\$(Configuration)\data
+copy /y assets\sample-1080p30-Hap.avi bin\$(Platform)\$(Configuration)\data\
+for /d %%f in ($(OF_ROOT)\libs\*) do (if exist %%f\lib\vs\$(Platform_Actual)\*.dll ( robocopy "%%f\lib\vs\$(Platform_Actual)" "$(ProjectDir)bin/$(Platform)/$(Configuration)" "*.dll" /njs /njh /np /fp /bytes ))
+if errorlevel 1 exit 0 else exit %errorlevel%</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\src;..\libs\External\BaseClasses;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+    <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>mkdir bin\$(Platform)\$(Configuration)\data
+copy /y assets\sample-1080p30-Hap.avi bin\$(Platform)\$(Configuration)\data\
+for /d %%f in ($(OF_ROOT)\libs\*) do (if exist %%f\lib\vs\$(Platform_Actual)\*.dll ( robocopy "%%f\lib\vs\$(Platform_Actual)" "$(ProjectDir)bin/$(Platform)/$(Configuration)" "*.dll" /njs /njh /np /fp /bytes ))
+if errorlevel 1 exit 0 else exit %errorlevel%</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\src;..\libs\External\BaseClasses;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+    <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>mkdir bin\$(Platform)\$(Configuration)\data
+copy /y assets\sample-1080p30-Hap.avi bin\$(Platform)\$(Configuration)\data\
+for /d %%f in ($(OF_ROOT)\libs\*) do (if exist %%f\lib\vs\$(Platform_Actual)\*.dll ( robocopy "%%f\lib\vs\$(Platform_Actual)" "$(ProjectDir)bin/$(Platform)/$(Configuration)" "*.dll" /njs /njh /np /fp /bytes ))
+if errorlevel 1 exit 0 else exit %errorlevel%</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\ofxDirectShowDXTVideoPlayer\src\DirectShowDXTVideo.cpp" />
+    <ClCompile Include="..\..\ofxDirectShowDXTVideoPlayer\src\uids.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\amextra.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\amfilter.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\amvideo.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\arithutil.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\combase.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\cprop.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\ctlutil.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\ddmm.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\dllentry.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\dllsetup.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\mtype.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\outputq.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\perflog.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\pstream.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\pullpin.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\refclock.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\renbase.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\schedule.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\seekpt.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\source.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\strmctl.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\sysclock.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\transfrm.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\transip.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\videoctl.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\vtrans.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\winctrl.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\winutil.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\wxdebug.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\wxlist.cpp" />
+    <ClCompile Include="..\libs\External\BaseClasses\wxutil.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ofApp.cpp" />
+    <ClCompile Include="..\..\ofxDirectShowDXTVideoPlayer\src\DSRawSampleGrabber.cpp" />
+    <ClCompile Include="..\..\ofxDirectShowDXTVideoPlayer\src\ofxDirectShowDXTVideoPlayer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\ofxDirectShowDXTVideoPlayer\src\DirectShowDXTVideo.h" />
+    <ClInclude Include="..\..\ofxDirectShowDXTVideoPlayer\src\DSRawSampleGrabber.h" />
+    <ClInclude Include="..\..\ofxDirectShowDXTVideoPlayer\src\uids.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\amextra.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\amfilter.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\cache.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\checkbmi.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\combase.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\cprop.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\ctlutil.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\ddmm.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\dllsetup.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\dxmperf.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\fourcc.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\measure.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\msgthrd.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\mtype.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\outputq.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\perflog.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\perfstruct.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\pstream.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\pullpin.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\refclock.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\reftime.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\renbase.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\schedule.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\seekpt.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\source.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\streams.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\strmctl.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\sysclock.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\transfrm.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\transip.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\videoctl.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\vtrans.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\winctrl.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\winutil.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\wxdebug.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\wxlist.h" />
+    <ClInclude Include="..\libs\External\BaseClasses\wxutil.h" />
+    <ClInclude Include="src\ofApp.h" />
+    <ClInclude Include="..\..\..\addons\ofxDirectShowDXTVideoPlayer\src\DSShared.h" />
+    <ClInclude Include="..\..\ofxDirectShowDXTVideoPlayer\src\DXTShared.h" />
+    <ClInclude Include="..\..\ofxDirectShowDXTVideoPlayer\src\ofxDirectShowDXTVideoPlayer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
+      <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(OF_ROOT)\libs\openFrameworksCompiled\project\vs</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="icon.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
