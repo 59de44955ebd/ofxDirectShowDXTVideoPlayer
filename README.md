@@ -1,10 +1,10 @@
 # ofxDirectShowDXTVideoPlayer
 
-A simple video player addon for openFrameworks that plays HAP-encoded videos natively on Windows using DirectShow video playback tools.
+A simple video player addon for [openFrameworks](https://github.com/openframeworks/openFrameworks) that plays HAP-encoded videos natively on Windows using DirectShow video playback tools.
 
 HAP is a video codec that is decoded on the GPU. Some of its benefits include fast decompression and low CPU usage. It was written by Tom Butterworth for [VIDVOX/VDMX](https://vidvox.net/). For further information on HAP, see http://hap.video/.
 
-This addon is based on code of [ofxDSHapVideoPlayer](https://github.com/secondstory/ofxDSHapVideoPlayer) by [secondstory](https://github.com/secondstory).
+This addon is based on code of [ofxDSHapVideoPlayer](https://github.com/secondstory/ofxDSHapVideoPlayer) by [Second Story](https://github.com/secondstory).
 
 But the original code was changed quite a bit, and this addon works differently. It uses the [LAV](https://github.com/Nevcairiel/LAVFilters) Splitter Source Filter as splitter, and the [HapDecoder](https://github.com/59de44955ebd/HapDecoder) filter as decoder. It receives DXT compressed texture frames from HapDecoder, and uploads them to the GPU via OpenGL.
 
