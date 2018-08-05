@@ -6,7 +6,7 @@ HAP is a video codec that is decoded on the GPU. Some of its benefits include fa
 
 This addon is based on code of [ofxDSHapVideoPlayer](https://github.com/secondstory/ofxDSHapVideoPlayer) by [secondstory](https://github.com/secondstory).
 
-But the original code was changed quite a bit, and this addon works differently. It uses the [LAV](https://github.com/Nevcairiel/LAVFilters) Splitter Source Filter as splitter, and the HapDecoder filter as decoder. It receives DXT compressed texture frames from HapDecoder, and uploads them to the GPU via OpenGL.
+But the original code was changed quite a bit, and this addon works differently. It uses the [LAV](https://github.com/Nevcairiel/LAVFilters) Splitter Source Filter as splitter, and the [HapDecoder](https://github.com/59de44955ebd/HapDecoder) filter as decoder. It receives DXT compressed texture frames from HapDecoder, and uploads them to the GPU via OpenGL.
 
 Unlike ofxDSHapVideoPlayer, this addon supports various containers (AVI, MOV, MKV), and also supports HAP videos encoded by [FFmpeg](https://github.com/FFmpeg/FFmpeg).
 
