@@ -2,7 +2,7 @@
 
 A simple video player addon for [openFrameworks](https://github.com/openframeworks/openFrameworks) that plays HAP-encoded videos natively on Windows using DirectShow video playback tools.
 
-HAP is a video codec that is decoded on the GPU. Some of its benefits include fast decompression and low CPU usage. It was written by Tom Butterworth for [VIDVOX/VDMX](https://vidvox.net/). For further information on HAP, see http://hap.video/.
+HAP is a video codec that is decoded on the GPU. Some of its benefits include fast decompression and low CPU usage. It was written by [Tom Butterworth](https://github.com/bangnoise) for [VIDVOX/VDMX](https://vidvox.net/). For further information on HAP, see http://hap.video/.
 
 This addon is based on code of [ofxDSHapVideoPlayer](https://github.com/secondstory/ofxDSHapVideoPlayer) by [Second Story](https://github.com/secondstory).
 
