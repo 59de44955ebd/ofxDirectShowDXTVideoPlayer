@@ -6,23 +6,23 @@ void ofApp::setup(){
 	//dxtPlayer.load("sample-1080p30-HapA.avi");
 	//dxtPlayer.load("sample-1080p30-HapQ.avi");
 
-	if (!dxtPlayer.load("sample-1080p30-Hap.avi")) {
+	if (!m_dxtPlayer.load("sample-1080p30-Hap.avi")) {
 		ofLogError("ofApp") << "Error loading sample-1080p30-Hap.avi";
 		ofExit(1);
 	}
 
-	dxtPlayer.play();
+	m_dxtPlayer.play();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	dxtPlayer.update();
+	m_dxtPlayer.update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofSetColor(255);
-	dxtPlayer.draw(0, 0, m_width, m_height);
+	m_dxtPlayer.draw(0, 0, m_width, m_height);
 }
 
 //--------------------------------------------------------------
