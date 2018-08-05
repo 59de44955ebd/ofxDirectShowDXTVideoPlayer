@@ -22,4 +22,4 @@ Unlike ofxDSHapVideoPlayer, this addon supports various containers (AVI, MOV, MK
 
 *Usage*
 
-see [example/src/ofApp.cpp](example/src/ofApp.cpp)
+See [example/src/ofApp.cpp](example/src/ofApp.cpp)
