@@ -203,8 +203,8 @@ void ofxDirectShowDXTVideoPlayer::update(){
 }
 
 void ofxDirectShowDXTVideoPlayer::writeToTexture(ofTexture &texture) {
-	m_player->getPixels(m_pix.getPixels());
 
+	m_player->getPixels(m_pix.getData());
     ofTextureData texData = texture.getTextureData();
 
     if (!ofIsGLProgrammableRenderer())
@@ -224,7 +224,7 @@ void ofxDirectShowDXTVideoPlayer::writeToTexture(ofTexture &texture) {
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &dataLength);
     }
 
-    glCompressedTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, texData.glInternalFormat, dataLength, m_pix.getPixels());
+    glCompressedTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, texData.glInternalFormat, dataLength, m_pix.getData());
 
 //    GLenum err = glGetError();
 //    if (err != GL_NO_ERROR){
@@ -280,12 +280,6 @@ ofPixels & ofxDirectShowDXTVideoPlayer::getPixels(){
 const ofPixels & ofxDirectShowDXTVideoPlayer::getPixels() const {
 	return m_pix;
 }
-
-/*
-unsigned char* ofxDirectShowDXTVideoPlayer::getPixels(){
-	return pix.getPixels();
-}
-*/
 
 float ofxDirectShowDXTVideoPlayer::getWidth() const  {
 	if(m_player && m_player->isLoaded() ){

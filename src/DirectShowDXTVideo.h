@@ -18,44 +18,8 @@ public:
 	DirectShowDXTVideo();
 	~DirectShowDXTVideo();
 
-	void tearDown();
-	void clearValues();
-
-	//------------------------------------------------
-	STDMETHODIMP_(ULONG) AddRef() { return 1; }
-	STDMETHODIMP_(ULONG) Release() { return 2; }
-	//------------------------------------------------
-	STDMETHODIMP QueryInterface(REFIID riid, void **ppvObject);
-
-	STDMETHODIMP SampleCB(long Time, IMediaSample *pSample);
-
-	//This method is meant to have more overhead
-	STDMETHODIMP BufferCB(double Time, BYTE *pBuffer, long BufferLen) {return E_NOTIMPL;}
-
 	bool loadMovieManualGraph(string path);
 
-	void createFilterGraphManager(bool &success);
-
-	void querySeekInterface(bool &success);
-	void queryPositionInterface(bool &success);
-	void queryAudioInterface(bool &success);
-	void queryControlInterface(bool &success);
-	void queryEventInterface(bool &success);
-	void queryFileSourceFilterInterface(bool &success);
-
-	void fileSourceFilterInterfaceLoad(string path, bool &success);
-
-	void createLavSplitterSourceFilter(bool &success);
-	void createHapDecoderFilter(bool &success);
-	void createRawSampleGrabberFilter(bool &success);
-	void createNullRendererFilter(bool &success);
-	void createAudioRendererFilter(bool &success);
-
-	void addFilter(IBaseFilter * filter, LPCWSTR filterName, bool &success);
-	bool hasPins(IBaseFilter * filter);
-	IPin * getOutputPin(IBaseFilter * filter, bool &success);
-	IPin * getInputPin(IBaseFilter * filter, bool &success);
-	void connectPins(IPin * pinOut, IPin * pinIn, bool &success);
 	void getDimensionsAndFrameInfo(bool &success);
 	bool getContainsAudio(IBaseFilter * filter, IPin *& audioPin);
 	void update();
@@ -89,27 +53,56 @@ public:
 	int getBufferSize();
 	void getPixels(unsigned char * dstBuffer);
 
-protected:
+private:
 
-	HRESULT hr;							// COM return value
+	STDMETHODIMP_(ULONG) AddRef() { return 1; }
+	STDMETHODIMP_(ULONG) Release() { return 2; }
+	STDMETHODIMP QueryInterface(REFIID riid, void **ppvObject);
+	STDMETHODIMP SampleCB(long Time, IMediaSample *pSample);
+	STDMETHODIMP BufferCB(double Time, BYTE *pBuffer, long BufferLen) {return E_NOTIMPL;}
 
-										// interfaces
-	IFilterGraph2 * filterGraphManager;	// Filter Graph
-	IMediaControl *controlInterface;	// Media Control interface
-	IMediaEvent   *eventInterface;		// Media Event interface
-	IMediaSeeking *seekInterface;		// Media Seeking interface
-	IMediaPosition * positionInterface;
-	IBasicAudio   *audioInterface;		// Audio Settings interface
-	ISampleGrabber * m_pGrabber;
-	IFileSourceFilter * fileSourceFilterInterface;
+	void tearDown();
+	void clearValues();
+
+	void createFilterGraphManager(bool &success);
+
+	void querySeekInterface(bool &success);
+	void queryPositionInterface(bool &success);
+	void queryAudioInterface(bool &success);
+	void queryControlInterface(bool &success);
+	void queryEventInterface(bool &success);
+	void queryFileSourceFilterInterface(bool &success);
+
+	void pSourceFilterInterfaceLoad(string path, bool &success);
+
+	void createLavSplitterSourceFilter(bool &success);
+	void createHapDecoderFilter(bool &success);
+	void createRawSampleGrabberFilter(bool &success);
+	void createNullRendererFilter(bool &success);
+	void createAudioRendererFilter(bool &success);
+
+	void addFilter(IBaseFilter * filter, LPCWSTR filterName, bool &success);
+	IPin * getOutputPin(IBaseFilter * filter, bool &success);
+	IPin * getInputPin(IBaseFilter * filter, bool &success);
+	void connectPins(IPin * pinOut, IPin * pinIn, bool &success);
+
+	HRESULT hr;
+
+	// interfaces
+	IFilterGraph2 * pGraphManager = NULL;	           // Filter Graph
+	IMediaControl * pControlInterface = NULL;	       // Media Control interface
+	IMediaEvent * pEventInterface = NULL;		   // Media Event interface
+	IMediaSeeking * pSeekInterface = NULL;		       // Media Seeking interface
+	IMediaPosition * pPositionInterface = NULL;
+	IBasicAudio * pAudioInterface = NULL;		    // Audio Settings interface
+	IFileSourceFilter * pSourceFilterInterface = NULL;
 
 	// filters
-	IBaseFilter * lavSplitterSourceFilter; // NEW
-	IBaseFilter * hapDecoderFilter; // NEW
-	IBaseFilter * nullRendererFilter;
-	IBaseFilter * audioRendererFilter;
-
-	DSRawSampleGrabber * rawSampleGrabberFilter;
+	IBaseFilter * pLavSplitterSourceFilter = NULL;
+	IBaseFilter * pHapDecoderFilter = NULL;
+	DSRawSampleGrabber * pRawSampleGrabberFilter = NULL;
+	IBaseFilter * pNullRendererFilter = NULL;
+	IBaseFilter * pAudioRendererFilter = NULL;
 
 	GUID timeFormat;
 	REFERENCE_TIME timeNow;				// Used for FF & REW of movie, current time

@@ -11,6 +11,9 @@
 #include <streams.h>
 #include "DirectShowDXTVideo.h"
 
+#define SAFE_RELEASE(X) { if (X) X->Release(); X = NULL; }
+#define CHECK_SUCCESS(X) { if (!X) {tearDown();return false;} }
+
 static int comRefCount = 0;
 
 static void retainCom() {
@@ -42,81 +45,35 @@ DirectShowDXTVideo::~DirectShowDXTVideo() {
 
 void DirectShowDXTVideo::tearDown() {
 
-	if (controlInterface) {
-		controlInterface->Stop();
-		controlInterface->Release();
-	}
-	if (eventInterface) {
-		eventInterface->Release();
-	}
-	if (seekInterface) {
-		seekInterface->Release();
-	}
-	if (audioInterface) {
-		audioInterface->Release();
-	}
-	if (positionInterface) {
-		positionInterface->Release();
-	}
+	//release interfaces
+	if (pControlInterface) pControlInterface->Stop();
+	SAFE_RELEASE(pControlInterface);
+	SAFE_RELEASE(pEventInterface);
+	SAFE_RELEASE(pSeekInterface);
+	SAFE_RELEASE(pAudioInterface);
+	SAFE_RELEASE(pPositionInterface);
+	SAFE_RELEASE(pSourceFilterInterface);
 
-	if (fileSourceFilterInterface) {
-		fileSourceFilterInterface->Release();
-	}
+	SAFE_RELEASE(pGraphManager); // removes filters on the fly
 
-	if (filterGraphManager) {
-		this->filterGraphManager->RemoveFilter(this->lavSplitterSourceFilter);
-		this->filterGraphManager->RemoveFilter(this->hapDecoderFilter);
-		this->filterGraphManager->RemoveFilter(this->rawSampleGrabberFilter);
-		this->filterGraphManager->RemoveFilter(this->nullRendererFilter);
-		this->filterGraphManager->RemoveFilter(this->audioRendererFilter);
-		filterGraphManager->Release();
-	}
+	// release filters
+	if (pRawSampleGrabberFilter) pRawSampleGrabberFilter->SetCallback(NULL, 0);
+	SAFE_RELEASE(pRawSampleGrabberFilter);
+	SAFE_RELEASE(pLavSplitterSourceFilter);
+	SAFE_RELEASE(pHapDecoderFilter);
+	SAFE_RELEASE(pNullRendererFilter);
+	SAFE_RELEASE(pAudioRendererFilter);
 
-	if (lavSplitterSourceFilter) {
-		lavSplitterSourceFilter->Release();
-	}
-	if (hapDecoderFilter) {
-		hapDecoderFilter->Release();
-	}
-	if (nullRendererFilter) {
-		nullRendererFilter->Release();
-	}
-	if (audioRendererFilter) {
-		audioRendererFilter->Release();
-	}
-	if (rawSampleGrabberFilter) {
-		rawSampleGrabberFilter->SetCallback(NULL, 0);
-		rawSampleGrabberFilter->Release();
-	}
 	if (rawBuffer) {
 		delete[] rawBuffer;
+		rawBuffer = NULL;
 	}
 	clearValues();
 }
 
 void DirectShowDXTVideo::clearValues() {
-
 	hr = 0;
-
-	// interfaces
-	filterGraphManager = NULL;
-	controlInterface = NULL;
-	eventInterface = NULL;
-	seekInterface = NULL;
-	audioInterface = NULL;
-	m_pGrabber = NULL;
-	positionInterface = NULL;
-
-	// filters
-	nullRendererFilter = NULL;
-	lavSplitterSourceFilter = NULL;
-	fileSourceFilterInterface = NULL;
-	hapDecoderFilter = NULL;
-	rawSampleGrabberFilter = NULL;
-	audioRendererFilter = NULL;
-
 	rawBuffer = NULL;
-
 	timeFormat = TIME_FORMAT_MEDIA_TIME;
 	timeNow = 0;
 	lPositionInSecs = 0;
@@ -138,18 +95,15 @@ void DirectShowDXTVideo::clearValues() {
 	curMovieFrame = -1;
 	frameCount = -1;
 	lastBufferSize = 0;
-
 	movieRate = 1.0;
 	averageTimePerFrame = 1.0 / 30.0;
 }
 
-//------------------------------------------------
 STDMETHODIMP DirectShowDXTVideo::QueryInterface(REFIID riid, void **ppvObject) {
 	*ppvObject = static_cast<ISampleGrabberCB*>(this);
 	return S_OK;
 }
 
-//------------------------------------------------
 STDMETHODIMP DirectShowDXTVideo::SampleCB(long Time, IMediaSample *pSample) {
 
 	if (!rawBuffer) return E_OUTOFMEMORY;
@@ -179,138 +133,102 @@ bool DirectShowDXTVideo::loadMovieManualGraph(string path) {
 	//Release all the filters etc.
 	tearDown();
 
-	bool success = true;
+	bool bSuccess = true;
 
-	this->createFilterGraphManager(success);
-	if (success == false) {
-		tearDown();
-		return false;
+	this->createFilterGraphManager(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->createLavSplitterSourceFilter(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->createHapDecoderFilter(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->createRawSampleGrabberFilter(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->createNullRendererFilter(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->querySeekInterface(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->queryPositionInterface(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->queryAudioInterface(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->queryControlInterface(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->queryEventInterface(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->queryFileSourceFilterInterface(bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->addFilter(this->pLavSplitterSourceFilter, L"LAVSplitterSource", bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->addFilter(this->pHapDecoderFilter, L"HapDecoder", bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->addFilter(this->pRawSampleGrabberFilter, L"RawSampleGrabber", bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->addFilter(this->pNullRendererFilter, L"NullRenderer", bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	this->pSourceFilterInterfaceLoad(path, bSuccess);
+	CHECK_SUCCESS(bSuccess);
+
+	// pLavSplitterSourceFilter -> pHapDecoderFilter
+	IPin * lavSplitterSourceOutput = this->getOutputPin(this->pLavSplitterSourceFilter, bSuccess);
+	CHECK_SUCCESS(bSuccess);
+	IPin * hapDecoderInput = this->getInputPin(this->pHapDecoderFilter, bSuccess);
+	if (bSuccess) {
+		this->connectPins(lavSplitterSourceOutput, hapDecoderInput, bSuccess);
+		hapDecoderInput->Release();
 	}
-
-	this->createLavSplitterSourceFilter(success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->createHapDecoderFilter(success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->createRawSampleGrabberFilter(success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->createNullRendererFilter(success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->querySeekInterface(success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->queryPositionInterface(success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->queryAudioInterface(success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->queryControlInterface(success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->queryEventInterface(success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->queryFileSourceFilterInterface(success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->addFilter(this->lavSplitterSourceFilter, L"LAVSplitterSource", success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->addFilter(this->hapDecoderFilter, L"HapDecoder", success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->addFilter(this->rawSampleGrabberFilter, L"RawSampleGrabber", success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->addFilter(this->nullRendererFilter, L"NullRenderer", success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	this->fileSourceFilterInterfaceLoad(path, success);
-	if (success == false) {
-		tearDown();
-		return false;
-	}
-
-	// lavSplitterSourceFilter -> hapDecoderFilter
-	IPin * lavSplitterSourceOutput = this->getOutputPin(this->lavSplitterSourceFilter, success);
-	IPin * hapDecoderInput = this->getInputPin(this->hapDecoderFilter, success);
-	this->connectPins(lavSplitterSourceOutput, hapDecoderInput, success);
 	lavSplitterSourceOutput->Release();
-	hapDecoderInput->Release();
+	CHECK_SUCCESS(bSuccess);
 
-	// hapDecoderFilter -> rawSampleGrabberFilter
-	IPin * hapDecoderOutput = this->getOutputPin(this->hapDecoderFilter, success);
-	IPin * rawSampleGrabberInput = this->getInputPin(this->rawSampleGrabberFilter, success);
-	this->connectPins(hapDecoderOutput, rawSampleGrabberInput, success);
+	// pHapDecoderFilter -> pRawSampleGrabberFilter
+	IPin * hapDecoderOutput = this->getOutputPin(this->pHapDecoderFilter, bSuccess);
+	CHECK_SUCCESS(bSuccess);
+	IPin * rawSampleGrabberInput = this->getInputPin(this->pRawSampleGrabberFilter, bSuccess);
+	if (bSuccess) {
+		this->connectPins(hapDecoderOutput, rawSampleGrabberInput, bSuccess);
+		rawSampleGrabberInput->Release();
+	}
 	hapDecoderOutput->Release();
-	rawSampleGrabberInput->Release();
+	CHECK_SUCCESS(bSuccess);
 
-	// check if file contains audio
-	IPin * lavSplitterSourceAudioOutput = NULL;
-	if (getContainsAudio(lavSplitterSourceFilter, lavSplitterSourceAudioOutput)) {
-		this->createAudioRendererFilter(success);
-		this->addFilter(this->audioRendererFilter, L"SoundRenderer", success);
-
-		IPin * audioInputPin = this->getInputPin(audioRendererFilter, success);
-
-		this->connectPins(lavSplitterSourceAudioOutput, audioInputPin, success);
-
-		lavSplitterSourceAudioOutput->Release();
-		audioInputPin->Release();
+	// pRawSampleGrabberFilter -> pNullRendererFilter
+	// No need to connect nullRenderer. AM_RENDEREX_RENDERTOEXISTINGRENDERS requires that the input pin is not connected
+	IPin * rawSampleGrabberOutput = this->getOutputPin(this->pRawSampleGrabberFilter, bSuccess);
+	CHECK_SUCCESS(bSuccess);
+	hr = this->pGraphManager->RenderEx(rawSampleGrabberOutput, AM_RENDEREX_RENDERTOEXISTINGRENDERERS, NULL);
+	rawSampleGrabberOutput->Release();
+	if (FAILED(hr)) {
+		tearDown();
+		return false;
 	}
 
-	IPin * rawSampleGrabberOutput = this->getOutputPin(this->rawSampleGrabberFilter, success);
+	// check if file also contains audio, if yes, render it with system defaults
+	IPin * lavSplitterSourceAudioOutput = NULL;
+	if (getContainsAudio(pLavSplitterSourceFilter, lavSplitterSourceAudioOutput)) {
+		this->createAudioRendererFilter(bSuccess);
+		if (bSuccess) this->addFilter(this->pAudioRendererFilter, L"SoundRenderer", bSuccess);
+		if (bSuccess) {
+			hr = this->pGraphManager->RenderEx(lavSplitterSourceAudioOutput, AM_RENDEREX_RENDERTOEXISTINGRENDERERS, NULL);
+			if (FAILED(hr)) ofLogWarning("DirectShowDXTVideo") << "Failed to render audio pin";
+		}
+		lavSplitterSourceAudioOutput->Release();
+	}
 
-	// No need to connect nullRenderer. AM_RENDEREX_RENDERTOEXISTINGRENDERS requires that the input pin is not connected
-	hr = this->filterGraphManager->RenderEx(rawSampleGrabberOutput, AM_RENDEREX_RENDERTOEXISTINGRENDERERS, NULL);
-
-	this->getDimensionsAndFrameInfo(success);
+	this->getDimensionsAndFrameInfo(bSuccess);
 
 	updatePlayState();
 
@@ -321,7 +239,7 @@ bool DirectShowDXTVideo::loadMovieManualGraph(string path) {
 
 void DirectShowDXTVideo::createFilterGraphManager(bool &success)
 {
-	HRESULT hr = CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void **)&filterGraphManager);
+	HRESULT hr = CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void **)&pGraphManager);
 	if (FAILED(hr)) {
 		success = false;
 	}
@@ -330,7 +248,7 @@ void DirectShowDXTVideo::createFilterGraphManager(bool &success)
 void DirectShowDXTVideo::querySeekInterface(bool &success)
 {
 	//Allow the ability to go to a specific frame
-	HRESULT hr = this->filterGraphManager->QueryInterface(IID_IMediaSeeking, (void**)&this->seekInterface);
+	HRESULT hr = this->pGraphManager->QueryInterface(IID_IMediaSeeking, (void**)&this->pSeekInterface);
 	if (FAILED(hr)) {
 		success = false;
 	}
@@ -339,7 +257,7 @@ void DirectShowDXTVideo::querySeekInterface(bool &success)
 void DirectShowDXTVideo::queryPositionInterface(bool &success)
 {
 	//Allows the ability to set the rate and query whether forward and backward seeking is possible
-	HRESULT hr = this->filterGraphManager->QueryInterface(IID_IMediaPosition, (LPVOID *)&this->positionInterface);
+	HRESULT hr = this->pGraphManager->QueryInterface(IID_IMediaPosition, (LPVOID *)&this->pPositionInterface);
 	if (FAILED(hr)) {
 		success = false;
 	}
@@ -348,7 +266,7 @@ void DirectShowDXTVideo::queryPositionInterface(bool &success)
 void DirectShowDXTVideo::queryAudioInterface(bool &success)
 {
 	//Audio settings interface
-	HRESULT hr = this->filterGraphManager->QueryInterface(IID_IBasicAudio, (void**)&this->audioInterface);
+	HRESULT hr = this->pGraphManager->QueryInterface(IID_IBasicAudio, (void**)&this->pAudioInterface);
 	if (FAILED(hr)) {
 		success = false;
 	}
@@ -357,7 +275,7 @@ void DirectShowDXTVideo::queryAudioInterface(bool &success)
 void DirectShowDXTVideo::queryControlInterface(bool &success)
 {
 	// Control flow of data through the filter graph. I.e. run, pause, stop
-	HRESULT hr = this->filterGraphManager->QueryInterface(IID_IMediaControl, (void **)&this->controlInterface);
+	HRESULT hr = this->pGraphManager->QueryInterface(IID_IMediaControl, (void **)&this->pControlInterface);
 	if (FAILED(hr)) {
 		success = false;
 	}
@@ -366,7 +284,7 @@ void DirectShowDXTVideo::queryControlInterface(bool &success)
 void DirectShowDXTVideo::queryEventInterface(bool &success)
 {
 	// Media events
-	HRESULT hr = this->filterGraphManager->QueryInterface(IID_IMediaEvent, (void **)&this->eventInterface);
+	HRESULT hr = this->pGraphManager->QueryInterface(IID_IMediaEvent, (void **)&this->pEventInterface);
 	if (FAILED(hr)) {
 		success = false;
 	}
@@ -374,17 +292,17 @@ void DirectShowDXTVideo::queryEventInterface(bool &success)
 
 void DirectShowDXTVideo::queryFileSourceFilterInterface(bool &success)
 {
-	HRESULT hr = lavSplitterSourceFilter->QueryInterface(IID_IFileSourceFilter, (void**)&fileSourceFilterInterface);
+	HRESULT hr = pLavSplitterSourceFilter->QueryInterface(IID_IFileSourceFilter, (void**)&pSourceFilterInterface);
 	if (FAILED(hr)) {
 		success = false;
 	}
 }
 
-void DirectShowDXTVideo::fileSourceFilterInterfaceLoad(string path, bool &success)
+void DirectShowDXTVideo::pSourceFilterInterfaceLoad(string path, bool &success)
 {
 	std::wstring filePathW = std::wstring(path.begin(), path.end());
 
-	HRESULT hr = fileSourceFilterInterface->Load(filePathW.c_str(), NULL);
+	HRESULT hr = pSourceFilterInterface->Load(filePathW.c_str(), NULL);
 	if (FAILED(hr)) {
 		ofLogError("DirectShowDXTVideo") << "Failed to load file " << path;
 		success = false;
@@ -392,14 +310,14 @@ void DirectShowDXTVideo::fileSourceFilterInterfaceLoad(string path, bool &succes
 }
 
 void DirectShowDXTVideo::createLavSplitterSourceFilter(bool &success) {
-	HRESULT hr = CoCreateInstance(CLSID_LAVSplitterSource, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&this->lavSplitterSourceFilter));
+	HRESULT hr = CoCreateInstance(CLSID_LAVSplitterSource, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&this->pLavSplitterSourceFilter));
 	if (FAILED(hr)) {
 		success = false;
 	}
 }
 
 void DirectShowDXTVideo::createHapDecoderFilter(bool &success) {
-	HRESULT hr = CoCreateInstance(CLSID_HapDecoder, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&this->hapDecoderFilter));
+	HRESULT hr = CoCreateInstance(CLSID_HapDecoder, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&this->pHapDecoderFilter));
 	if (FAILED(hr)) {
 		success = false;
 	}
@@ -407,138 +325,93 @@ void DirectShowDXTVideo::createHapDecoderFilter(bool &success) {
 
 void DirectShowDXTVideo::createRawSampleGrabberFilter(bool &success) {
 	HRESULT hr = 0;
-	this->rawSampleGrabberFilter = (DSRawSampleGrabber*)DSRawSampleGrabber::CreateInstance(NULL, &hr);
-	this->rawSampleGrabberFilter->AddRef();
-	if (FAILED(hr)) {
-		success = false;
-	}
-
-	this->rawSampleGrabberFilter->SetCallback(this, 0);
+	this->pRawSampleGrabberFilter = (DSRawSampleGrabber*)DSRawSampleGrabber::CreateInstance(NULL, &hr);
+	this->pRawSampleGrabberFilter->AddRef();
+	success = SUCCEEDED(hr);
+	this->pRawSampleGrabberFilter->SetCallback(this, 0);
 }
 
 void DirectShowDXTVideo::createNullRendererFilter(bool &success) {
-	HRESULT hr = CoCreateInstance(CLSID_NullRenderer, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&this->nullRendererFilter));
-	if (FAILED(hr)) {
-		success = false;
-	}
+	HRESULT hr = CoCreateInstance(CLSID_NullRenderer, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&this->pNullRendererFilter));
+	success = SUCCEEDED(hr);
 }
 
 void DirectShowDXTVideo::createAudioRendererFilter(bool &success)
 {
-	HRESULT hr = CoCreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&this->audioRendererFilter));
-	if (FAILED(hr)) {
-		success = false;
-	}
+	HRESULT hr = CoCreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&this->pAudioRendererFilter));
+	success = SUCCEEDED(hr);
 }
 
 void DirectShowDXTVideo::addFilter(IBaseFilter * filter, LPCWSTR filterName, bool &success)
 {
-	HRESULT hr = this->filterGraphManager->AddFilter(filter, filterName);
-	if (FAILED(hr)) {
-		success = false;
-	}
+	HRESULT hr = this->pGraphManager->AddFilter(filter, filterName);
+	success = SUCCEEDED(hr);
 }
 
-bool DirectShowDXTVideo::hasPins(IBaseFilter * filter)
-{
-	IEnumPins * enumPins;
-	IPin * pin;
-
-	filter->EnumPins(&enumPins);
-	enumPins->Reset();
-	int numPins = 0;
-	while (enumPins->Next(1, &pin, 0) == S_OK) {
-		numPins++;
-	}
-
-	if (numPins == 0) {
-		return false;
-	}
-
-	enumPins->Release();
-	return true;
-}
-
+// returns first found output pin, if any
 IPin * DirectShowDXTVideo::getOutputPin(IBaseFilter * filter, bool &success)
 {
-	IEnumPins * enumPins;
-	IPin * pin;
+	IEnumPins * pEnumPins;
+	IPin * pPin;
 	ULONG fetched;
-	PIN_INFO pinfo;
+	PIN_INFO pinInfo;
+	success = false;
 
-	filter->EnumPins(&enumPins);
-	enumPins->Reset();
-	enumPins->Next(1, &pin, &fetched);
-	if (pin == NULL) {
-		success = false;
-	}
-	else
-	{
-		pin->QueryPinInfo(&pinfo);
-		if (pinfo.dir == PINDIR_INPUT) {
-			pin->Release();
-			enumPins->Next(1, &pin, &fetched);
+	filter->EnumPins(&pEnumPins);
+	pEnumPins->Reset();
+	while (pEnumPins->Next(1, &pPin, &fetched) == S_OK) {
+		pPin->QueryPinInfo(&pinInfo);
+		if (pinInfo.dir == PINDIR_OUTPUT) {
+			success = true;
+			break;
 		}
+		pPin->Release();
+	};
 
-		if (pinfo.dir != PINDIR_OUTPUT) {
-			success = false;
-		}
-	}
-	enumPins->Release();
-
-	return pin;
+	pEnumPins->Release();
+	return pPin;
 }
 
+// returns first found input pin, if any
 IPin * DirectShowDXTVideo::getInputPin(IBaseFilter * filter, bool &success)
 {
-	IEnumPins * enumPins;
-	IPin * pin;
+	IEnumPins * pEnumPins;
+	IPin * pPin;
 	ULONG fetched;
-	PIN_INFO pinfo;
-	filter->EnumPins(&enumPins);
-	enumPins->Reset();
-	enumPins->Next(1, &pin, &fetched);
-	pin->QueryPinInfo(&pinfo);
-	pinfo.pFilter->Release();
-	if (pinfo.dir == PINDIR_OUTPUT) {
-		pin->Release();
-		enumPins->Next(1, &pin, &fetched);
-	}
-	if (pin == NULL) {
-		success = false;
-	}
-	else
-	{
-		pin->QueryPinInfo(&pinfo);
-		pinfo.pFilter->Release();
-		if (pinfo.dir != PINDIR_INPUT)
-		{
-			success = false;
-		}
-	}
-	enumPins->Release();
+	PIN_INFO pinInfo;
+	success = false;
 
-	return pin;
+	filter->EnumPins(&pEnumPins);
+	pEnumPins->Reset();
+	while (pEnumPins->Next(1, &pPin, &fetched) == S_OK) {
+		pPin->QueryPinInfo(&pinInfo);
+		if (pinInfo.dir == PINDIR_INPUT) {
+			success = true;
+			break;
+		}
+		pPin->Release();
+	};
+
+	pEnumPins->Release();
+	return pPin;
 }
 
 void DirectShowDXTVideo::connectPins(IPin * pinOut, IPin * pinIn, bool &success)
 {
-	HRESULT hr = filterGraphManager->ConnectDirect(pinOut, pinIn, NULL);
-	if (FAILED(hr)) {
-		success = false;
-	}
+	HRESULT hr = pGraphManager->ConnectDirect(pinOut, pinIn, NULL);
+	success = SUCCEEDED(hr);
 }
 
 void DirectShowDXTVideo::getDimensionsAndFrameInfo(bool &success)
 {
-	HRESULT hr = this->controlInterface->Run();
+	HRESULT hr = this->pControlInterface->Run();
 
 	// grab file dimensions and frame info
 
 	AM_MEDIA_TYPE mt;
 	ZeroMemory(&mt, sizeof(AM_MEDIA_TYPE));
 
-	hr = rawSampleGrabberFilter->GetMediaType(0, (CMediaType*)&mt);
+	hr = pRawSampleGrabberFilter->GetMediaType(0, (CMediaType*)&mt);
 
 	if (mt.pbFormat != NULL) {
 
@@ -589,46 +462,44 @@ void DirectShowDXTVideo::getDimensionsAndFrameInfo(bool &success)
 	}
 
 	// Now pause the graph.
-	hr = controlInterface->Stop();
+	hr = pControlInterface->Stop();
 }
 
 bool DirectShowDXTVideo::getContainsAudio(IBaseFilter * filter, IPin *& audioPin) {
-
-	bool bContainsAudio = false;
-
-	IEnumPins * enumPins;
-	IPin * pin;
+	IEnumPins * pEnumPins;
+	IPin * pPin;
 	ULONG fetched;
-	PIN_INFO pinfo;
+	PIN_INFO pinInfo;
 	HRESULT hr;
 
-	filter->EnumPins(&enumPins);
-	enumPins->Reset();
+	filter->EnumPins(&pEnumPins);
+	//pEnumPins->Reset();
 
-	while (enumPins->Next(1, &pin, &fetched) == S_OK) {
-
-		pin->QueryPinInfo(&pinfo);
-		pinfo.pFilter->Release();
-
-		if (pinfo.dir == PINDIR_OUTPUT) {
-
+	while (pEnumPins->Next(1, &pPin, &fetched) == S_OK) {
+		pPin->QueryPinInfo(&pinInfo);
+		pinInfo.pFilter->Release();
+		if (pinInfo.dir == PINDIR_OUTPUT) {
 			// check if splitter has audio output
-			IEnumMediaTypes * pEnum = NULL;
+			IEnumMediaTypes * pEnumTypes = NULL;
 			AM_MEDIA_TYPE * pmt = NULL;
 			BOOL bFound = false;
-			hr = pin->EnumMediaTypes(&pEnum);
-			while (pEnum->Next(1, &pmt, NULL) == S_OK) {
+			hr = pPin->EnumMediaTypes(&pEnumTypes);
+			while (pEnumTypes->Next(1, &pmt, NULL) == S_OK) {
 				if (pmt->majortype == MEDIATYPE_Audio) {
-					audioPin = pin;
-					bContainsAudio = true;
+					// we found an audio pin!
+					audioPin = pPin;
+					pEnumTypes->Release();
+					pEnumPins->Release();
+					return true;
 				}
 			}
+			pEnumTypes->Release();
 		}
 	}
 
-	enumPins->Release();
+	pEnumPins->Release();
 
-	return bContainsAudio;
+	return false;
 }
 
 void DirectShowDXTVideo::update() {
@@ -647,7 +518,7 @@ void DirectShowDXTVideo::update() {
 		}
 		curMovieFrame = frameCount;
 
-		while (S_OK == eventInterface->GetEvent(&eventCode, (LONG_PTR*)&ptrParam1, (LONG_PTR*)&ptrParam2, 0)) {
+		while (S_OK == pEventInterface->GetEvent(&eventCode, (LONG_PTR*)&ptrParam1, (LONG_PTR*)&ptrParam2, 0)) {
 			if (eventCode == EC_COMPLETE) {
 				if (bLoop) {
 					setPosition(0.0);
@@ -660,7 +531,7 @@ void DirectShowDXTVideo::update() {
 				}
 			}
 
-			eventInterface->FreeEventParams(eventCode, ptrParam1, ptrParam2);
+			pEventInterface->FreeEventParams(eventCode, ptrParam1, ptrParam2);
 		}
 	}
 }
@@ -676,7 +547,7 @@ void DirectShowDXTVideo::setVolume(float volPct) {
 		if (volPct > 1) volPct = 1.0;
 
 		long vol = log10(volPct) * 4000.0;
-		audioInterface->put_Volume(vol);
+		pAudioInterface->put_Volume(vol);
 	}
 }
 
@@ -684,7 +555,7 @@ float DirectShowDXTVideo::getVolume() {
 	float volPct = 0.0;
 	if (isLoaded()) {
 		long vol = 0;
-		audioInterface->get_Volume(&vol);
+		pAudioInterface->get_Volume(&vol);
 		volPct = powf(10, (float)vol / 4000.0);
 	}
 	return volPct;
@@ -693,12 +564,12 @@ float DirectShowDXTVideo::getVolume() {
 double DirectShowDXTVideo::getDurationInSeconds() {
 	if (this->timeFormat != TIME_FORMAT_MEDIA_TIME)
 	{
-		seekInterface->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
+		pSeekInterface->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
 		this->timeFormat = TIME_FORMAT_MEDIA_TIME;
 	}
 	if (isLoaded()) {
 		long long lDurationInNanoSecs = 0;
-		seekInterface->GetDuration(&lDurationInNanoSecs);
+		pSeekInterface->GetDuration(&lDurationInNanoSecs);
 		double timeInSeconds = (double)lDurationInNanoSecs / 10000000.0;
 
 		return timeInSeconds;
@@ -709,12 +580,12 @@ double DirectShowDXTVideo::getDurationInSeconds() {
 double DirectShowDXTVideo::getCurrentTimeInSeconds() {
 	if (this->timeFormat != TIME_FORMAT_MEDIA_TIME)
 	{
-		seekInterface->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
+		pSeekInterface->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
 		this->timeFormat = TIME_FORMAT_MEDIA_TIME;
 	}
 	if (isLoaded()) {
 		long long lCurrentTimeInNanoSecs = 0;
-		seekInterface->GetCurrentPosition(&lCurrentTimeInNanoSecs);
+		pSeekInterface->GetCurrentPosition(&lCurrentTimeInNanoSecs);
 		double timeInSeconds = (double)lCurrentTimeInNanoSecs / 10000000.0;
 
 		return timeInSeconds;
@@ -725,7 +596,7 @@ double DirectShowDXTVideo::getCurrentTimeInSeconds() {
 void DirectShowDXTVideo::setPosition(float pct) {
 	if (this->timeFormat != TIME_FORMAT_MEDIA_TIME)
 	{
-		seekInterface->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
+		pSeekInterface->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
 		this->timeFormat = TIME_FORMAT_MEDIA_TIME;
 	}
 	if (bVideoOpened) {
@@ -733,17 +604,17 @@ void DirectShowDXTVideo::setPosition(float pct) {
 		if (pct > 1.0) pct = 1.0;
 
 		long long lDurationInNanoSecs = 0;
-		seekInterface->GetDuration(&lDurationInNanoSecs);
+		pSeekInterface->GetDuration(&lDurationInNanoSecs);
 
 		rtNew = ((float)lDurationInNanoSecs * pct);
-		hr = seekInterface->SetPositions(&rtNew, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
+		hr = pSeekInterface->SetPositions(&rtNew, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
 	}
 }
 
 float DirectShowDXTVideo::getPosition() {
 	if (this->timeFormat != TIME_FORMAT_MEDIA_TIME)
 	{
-		seekInterface->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
+		pSeekInterface->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
 		this->timeFormat = TIME_FORMAT_MEDIA_TIME;
 	}
 	if (bVideoOpened) {
@@ -757,8 +628,8 @@ float DirectShowDXTVideo::getPosition() {
 
 void DirectShowDXTVideo::setSpeed(float speed) {
 	if (bVideoOpened) {
-		positionInterface->put_Rate(speed);
-		positionInterface->get_Rate(&movieRate);
+		pPositionInterface->put_Rate(speed);
+		pPositionInterface->get_Rate(&movieRate);
 	}
 }
 
@@ -772,7 +643,7 @@ DXTTextureFormat DirectShowDXTVideo::getTextureFormat() {
 
 void DirectShowDXTVideo::play() {
 	if (bVideoOpened) {
-		controlInterface->Run();
+		pControlInterface->Run();
 		bEndReached = false;
 		updatePlayState();
 	}
@@ -783,7 +654,7 @@ void DirectShowDXTVideo::stop() {
 		if (isPlaying()) {
 			setPosition(0.0);
 		}
-		controlInterface->Stop();
+		pControlInterface->Stop();
 		updatePlayState();
 	}
 }
@@ -791,10 +662,10 @@ void DirectShowDXTVideo::stop() {
 void DirectShowDXTVideo::setPaused(bool bPaused) {
 	if (bVideoOpened) {
 		if (bPaused) {
-			controlInterface->Pause();
+			pControlInterface->Pause();
 		}
 		else {
-			controlInterface->Run();
+			pControlInterface->Run();
 		}
 		updatePlayState();
 	}
@@ -803,7 +674,7 @@ void DirectShowDXTVideo::setPaused(bool bPaused) {
 void DirectShowDXTVideo::updatePlayState() {
 	if (bVideoOpened) {
 		FILTER_STATE fs;
-		hr = controlInterface->GetState(4000, (OAFilterState*)&fs);
+		hr = pControlInterface->GetState(4000, (OAFilterState*)&fs);
 		if (hr == S_OK) {
 			if (fs == State_Running) {
 				bPlaying = true;
@@ -875,24 +746,24 @@ void DirectShowDXTVideo::previousFrame() {
 void DirectShowDXTVideo::setFrame(int frame) {
 	if (this->timeFormat != TIME_FORMAT_FRAME)
 	{
-		seekInterface->SetTimeFormat(&TIME_FORMAT_FRAME);
+		pSeekInterface->SetTimeFormat(&TIME_FORMAT_FRAME);
 		this->timeFormat = TIME_FORMAT_FRAME;
 	}
 	if (bVideoOpened) {
 		LONGLONG frameNumber = frame;
-		hr = seekInterface->SetPositions(&frameNumber, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
+		hr = pSeekInterface->SetPositions(&frameNumber, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
 	}
 }
 
 int DirectShowDXTVideo::getCurrentFrame() {
 	if (this->timeFormat != TIME_FORMAT_FRAME)
 	{
-		seekInterface->SetTimeFormat(&TIME_FORMAT_FRAME);
+		pSeekInterface->SetTimeFormat(&TIME_FORMAT_FRAME);
 		this->timeFormat = TIME_FORMAT_FRAME;
 	}
 	LONGLONG currentFrame = 0;
 	if (bVideoOpened) {
-		seekInterface->GetCurrentPosition(&currentFrame);
+		pSeekInterface->GetCurrentPosition(&currentFrame);
 	}
 	return currentFrame;
 }
@@ -900,12 +771,12 @@ int DirectShowDXTVideo::getCurrentFrame() {
 int DirectShowDXTVideo::getTotalFrames() {
 	if (this->timeFormat != TIME_FORMAT_FRAME)
 	{
-		seekInterface->SetTimeFormat(&TIME_FORMAT_FRAME);
+		pSeekInterface->SetTimeFormat(&TIME_FORMAT_FRAME);
 		this->timeFormat = TIME_FORMAT_FRAME;
 	}
 	LONGLONG frames = 0;
 	if (isLoaded()) {
-		seekInterface->GetDuration(&frames);
+		pSeekInterface->GetDuration(&frames);
 	}
 	return frames;
 }
